@@ -38,6 +38,21 @@
 | 9 | Указатели: ≤ 1 уровень разыменования; без скрытых разыменований в макросах/typedef; запрет указателей на функции | Прослеживаемость потока данных и графа вызовов для статического анализа | A1, E3, F2 (частично) | Переосмыслено по языкам | В языках без явных указателей аналог — запрет скрытых механизмов, разрушающих анализ потока: сайд-эффекты при импорте, рефлексия/динамическая диспетчеризация по строкам без явной точки регистрации (закрывается требованием E3 об явном реестре обработчиков), `unsafe`-блоки без обоснования (регистрируются и подсчитываются гейтом Q-11). В C/C++ ограничение разыменований — проектная настройка линтера. Запрет указателей на функции ослаблен до «требует обоснования и явной альтернативы для анализатора» (оригинал сам допускает их при «сильном обосновании» — см. его rationale) |
 | 10 | Компиляция с максимальной строгостью предупреждений с первого дня, ноль предупреждений; ежедневный статический анализ ≥1 инструментом, ноль находок; сомнительное предупреждение — переписыванием кода, не отключением | «Нет оправдания не использовать» доступные анализаторы; ноль предупреждений даже при ложных срабатываниях | F2, F8, QUALITY_GATES Q-02/Q-03/Q-06/Q-11 | Сохранено + усилено | Полностью сохранено, включая «исправляй код, а не предупреждение». Усилено: «ежедневно» → «на каждый PR автоматически» (конвейер); ≥1 инструмент → набор (линт+типы+анализ+санитайзеры по классу); добавлено правило храповика для легаси (у NASA контекст — новый код миссий, для существующих репозиториев прямое требование нуля с первого дня неисполнимо механически) |
 
+### 2.1. Якоря цитат оригинала (EN, для механической сверки с `P10.pdf`)
+
+1. «Restrict all code to very simple control flow constructs – do not use goto statements, setjmp or longjmp constructs, and direct or indirect recursion.»
+2. «All loops must have a fixed upper-bound.» (в пересказе Wikipedia: «Give all loops a fixed upper bound»)
+3. «Do not use dynamic memory allocation after initialization.»
+4. «No function should be longer than what can be printed on a single sheet of paper…»
+5. «The assertion density of the code should average to a minimum of two assertions per function.»
+6. «Data objects must be declared at the smallest possible level of scope.»
+7. «The return value of non-void functions must be checked by each calling function, and the validity of parameters must be checked inside each function.»
+8. «The use of the preprocessor must be limited to the inclusion of header files and simple macro definitions.»
+9. «The use of pointers should be restricted.»
+10. «All code must be compiled, from the first day of development, with all compiler warnings enabled at the compiler's most pedantic setting.»
+
+Цитаты сверены с `P10.pdf` (вне репозитория); переводы в таблице §2 — авторские. Ссылка на Toyota/NESC: NESC Technical Assessment Report (2011), Appendix A (анализ прошивки по правилам Power of 10).
+
 ## 3. Чего NASA **не** говорит (защита от ложных интерпретаций)
 
 Эти утверждения часто приписываются Power of 10 ошибочно. Текст оригинала утверждает обратное или молчит:
@@ -70,20 +85,5 @@
 |---|---|---|
 | 1.0 | Первая редакция: 54 принципа (A–H), трассировка к 10 правилам, классы проектов К1–К3, гейты Q-01…Q-16 | Техническое задание; оригинал Holzmann 2006 |
 | 1.1 | Правки по итогам внешнего ревью (3 рецензента): гейты переименованы Q-01…Q-19 (устранена коллизия с доменом G); guard-слой переведён на независимые источники данных (Q-11/Q-15/Q-16 — счётчики и метки вычисляет CI, не автор PR); добавлен L0-периметр (branch protection, CODEOWNERS, запрет агент-аппрува); храповик подавлений + связка EX-ID; защита тестов (test-change, второе ревью, mutation для К1); новые гейты Q-17–Q-19; принцип A7 (фиче-флаги); несущие термины (§0.7 EP) и REPO_CLASS; честная маркировка процессных правил и метрика зрелости; последствия нарушений домена H (EXCEPTIONS_POLICY §8); якоря цитат оригинала; вычитка | Внешнее ревью пакета, 2026-11-13 |
-
-### 2.1. Якоря цитат оригинала (EN, для механической сверки с `P10.pdf`)
-
-1. «Restrict all code to very simple control flow constructs – do not use goto statements, setjmp or longjmp constructs, and direct or indirect recursion.»
-2. «All loops must have a fixed upper-bound.» (в пересказе Wikipedia: «Give all loops a fixed upper bound»)
-3. «Do not use dynamic memory allocation after initialization.»
-4. «No function should be longer than what can be printed on a single sheet of paper…»
-5. «The assertion density of the code should average to a minimum of two assertions per function.»
-6. «Data objects must be declared at the smallest possible level of scope.»
-7. «The return value of non-void functions must be checked by each calling function, and the validity of parameters must be checked inside each function.»
-8. «The use of the preprocessor must be limited to the inclusion of header files and simple macro definitions.»
-9. «The use of pointers should be restricted.»
-10. «All code must be compiled, from the first day of development, with all compiler warnings enabled at the compiler's most pedantic setting.»
-
-Цитаты сверены с `P10.pdf` (вне репозитория); переводы в таблице §2 — авторские. Ссылка на Toyota/NESC: NESC Technical Assessment Report (2011), Appendix A (анализ прошивки по правилам Power of 10).
 
 Будущие изменения стандарта (в т.ч. по сигналу исключений — `EXCEPTIONS_POLICY.md` §6) фиксируются здесь с обоснованием, чтобы трассировка оставалась полной.
