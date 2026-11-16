@@ -220,6 +220,10 @@ PERMIT: dict[tuple[str, str], str] = {
     # ROADMAP, задача A-3: «уроки G3 vs G-08» — историческое упоминание дефекта
     # ссылок v1.0, а не ссылка на гейт (гейты с v1.1 переименованы в Q-xx).
     ("ROADMAP.md", "G-08"): "историческое упоминание дефекта v1.0 (урок для A-3)",
+    # ROADMAP, задача B-9 (в плане): упоминания создаваемых артефактов.
+    # Удалить обе записи при выполнении B-9 — файлы начнут существовать.
+    ("ROADMAP.md", "standards/DIGEST.md"): "планируемый артефакт задачи B-9 (пока не создан)",
+    ("ROADMAP.md", "tools/build_digest.py"): "планируемый артефакт задачи B-9 (пока не создан)",
 }
 
 
@@ -279,6 +283,8 @@ def run_checks() -> None:
                     p = m.group(1)
                     if p.startswith("user/"):
                         continue  # локальный архив владельца, вне репозитория
+                    if (rel(f), p) in PERMIT:
+                        continue
                     base = f.parent if p.startswith("..") else ROOT
                     if not (base / p).resolve().exists():
                         err("FILES", f, i, f"упомянутый файл отсутствует: {p}")
