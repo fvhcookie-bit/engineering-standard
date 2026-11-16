@@ -15,3 +15,5 @@ jobs:
           python-version: "3.11"
       - name: Consistency of the standard's own documents (ROADMAP A-3)
         run: python tools/doc_consistency.py
+      - name: Digest freshness (ROADMAP B-9)
+        run: python tools/build_digest.py --check
