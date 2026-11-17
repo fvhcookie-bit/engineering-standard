@@ -55,6 +55,7 @@ jobs:
         env:
           PYTHONPATH: tooling
         run: |
+          set +e
           python -m runner.cli run --gate q11_suppressions --diff /tmp/self.patch \
             --repo-root tooling --config tooling/self_q11.json \
             --adapter fake --out /tmp/q11_report.json

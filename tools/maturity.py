@@ -70,15 +70,15 @@ def main(argv: list[str] | None = None, *, ep: Path = EP, out: Path = OUT,
     args = argv if argv is not None else sys.argv[1:]
     today = date.fromisoformat(args[0]) if args else date.today()
     data = compute(ep.read_text(encoding="utf-8"))
-    total = int(data["obyaz_total"])  # type: ignore[arg-type]
-    mech = int(data["obyaz_mechanical"])  # type: ignore[arg-type]
-    share = int(data["share_percent"])  # type: ignore[arg-type]
+    total = data["obyaz_total"]
+    mech = data["obyaz_mechanical"]
+    share = data["share_percent"]
     if total == 0:
         print("ошибка: итоговая таблица EP не распознана — метрика не публикуется",
               file=sys.stderr)
         return 1
 
-    rules = ", ".join(data["process_rules"]) or "—"  # type: ignore[arg-type]
+    rules = ", ".join(data["process_rules"]) or "—"
     out.write_text(
         "# Метрика зрелости стандарта (D-3)\n\n"
         f"**На дату {today.isoformat()}:** механически исполняется {mech} "
