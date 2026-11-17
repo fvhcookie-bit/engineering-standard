@@ -22,6 +22,28 @@ jobs:
       - name: Unit tests (contract-first)
         run: python -m pytest tooling/tests -q
       - name: Ruff
-        run: python -m ruff check tooling
+        run: python -m ruff check --config tooling/pyproject.toml tooling
       - name: Mypy strict
         run: python -m mypy --strict tooling/core tooling/gates tooling/runner tooling/adapters
+
+  self-gate-q11:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pyyaml
+      - name: Q-11 self-gate (companion догейтится собственным словарём)
+        run: |
+          git diff "origin/${{ github.base_ref }}...HEAD" -M -C > /tmp/self.patch
+          python -m runner.cli run --gate q11_suppressions --diff /tmp/self.patch \
+            --repo-root tooling --config tooling/self_q11.json \
+            --adapter fake --out /tmp/q11_report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: q11-report
+          path: /tmp/q11_report.json

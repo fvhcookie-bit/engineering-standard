@@ -1,0 +1,34 @@
+{
+  "gate": "q11_suppressions",
+  "mode": "diff",
+  "config": {
+    "dictionary": "tooling/dictionaries/python.yaml",
+    "language_ext": {
+      "python": [
+        ".py"
+      ]
+    },
+    "config_files": [
+      "**/.eslintrc.json",
+      "**/eslint.config.json",
+      "**/pyproject.toml",
+      "**/.mypy.ini",
+      "**/setup.cfg",
+      "**/.github/workflows/*.yml"
+    ],
+    "baseline_paths": [
+      "baseline/**",
+      "dictionaries/**"
+    ]
+  },
+  "expect": {
+    "status": "OK",
+    "codes": [
+      "CONFIG_FILE_TOUCHED",
+      "CONFIG_FINGERPRINT_CHANGED"
+    ],
+    "labels": [
+      "gates-change"
+    ]
+  }
+}

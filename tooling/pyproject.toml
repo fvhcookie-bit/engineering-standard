@@ -13,6 +13,13 @@ dependencies = ["PyYAML>=6", "requests>=2.31"]
 where = ["."]
 include = ["core*", "gates*", "runner*", "adapters*"]
 
+[tool.ruff]
+line-length = 120
+extend-exclude = ["fixtures", "dictionaries"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 

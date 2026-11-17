@@ -1,0 +1,20 @@
+{
+  "dictionary": "tooling/dictionaries/python.yaml",
+  "language_ext": {
+    "python": [
+      ".py"
+    ]
+  },
+  "config_files": [
+    "**/.eslintrc.json",
+    "**/eslint.config.json",
+    "**/pyproject.toml",
+    "**/.mypy.ini",
+    "**/setup.cfg",
+    "**/.github/workflows/*.yml"
+  ],
+  "baseline_paths": [
+    "tooling/baseline/**",
+    "tooling/dictionaries/**"
+  ]
+}

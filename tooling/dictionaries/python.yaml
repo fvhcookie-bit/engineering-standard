@@ -1,0 +1,25 @@
+schema: 1
+ecosystem: python
+reason_proximity_default: same_line
+patterns:
+  - id: noqa
+    regex: '#\s*noqa(?::\s*[A-Z0-9, ]+)?'
+    languages: [python]
+  - id: type_ignore
+    regex: '#\s*type:\s*ignore'
+    languages: [python]
+  - id: pyright_ignore
+    regex: '#\s*pyright:\s*ignore'
+    languages: [python]
+  - id: pytest_skip
+    regex: '@pytest\.mark\.(skip|skipif|xfail)\b'
+    languages: [python]
+  - id: unittest_skip
+    regex: '@unittest\.skip(If|Unless)?\('
+    languages: [python]
+  - id: cast_any
+    regex: '\bcast\(\s*Any\b'
+    languages: [python]
+  - id: mypy_ignore_errors
+    regex: 'ignore_errors\s*=\s*True'
+    languages: [python]

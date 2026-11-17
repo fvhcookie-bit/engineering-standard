@@ -1,0 +1,5 @@
+# baseline подавлений companion-репозитория (храповик Q-11, self-gating)
+schema: 1
+counts: {}
+fingerprint: {}
+generated_by: gate-runner init

@@ -1,0 +1,16 @@
+{
+  "gate": "q19_audit",
+  "mode": "tree",
+  "config": {
+    "today": "2026-11-17",
+    "k3_limit": 0.2,
+    "k3_alert": 0.16
+  },
+  "expect": {
+    "status": "OK",
+    "codes": [
+      "AUTO_TASK_ED"
+    ],
+    "labels": []
+  }
+}

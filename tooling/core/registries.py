@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date
+from pathlib import Path
 from typing import Any
 
 EX_ID_RE = r"^###\s+(EX-\d{4}-\d{3})\s*$"
@@ -67,13 +68,11 @@ def parse_exceptions_md(text: str) -> list[ExEntry]:
             continue
         if current is None or not line.startswith("- **"):
             continue
-        body = line[4:]  # после '- '
-        if not body.startswith("**"):
-            continue
-        end = body.find("**", 2)
+        body = line[4:]  # содержимое после '- **'
+        end = body.find("**")
         if end == -1:
             continue
-        name = body[2:end]
+        name = body[:end].strip().rstrip(":")
         rest = body[end + 2:].strip()
         rest = rest.removeprefix(":")
         value = rest.strip()
@@ -99,6 +98,23 @@ class Registries:
     @classmethod
     def empty(cls) -> Registries:
         return cls()
+
+    @classmethod
+    def from_repo(cls, root: Path) -> Registries:
+        """Загрузка стандартных реестров целевого репозитория (TASK §2)."""
+        from core.files import RepoFiles
+
+        rf = RepoFiles(root=root)
+        exc = rf.read("EXCEPTIONS.md")
+        rc = rf.read("REPO_CLASS")
+        bl = rf.read("baseline/suppressions.yaml")
+        co = rf.read("CODEOWNERS")
+        return cls(
+            exceptions=parse_exceptions_md(exc) if exc else [],
+            baseline=load_baseline(bl) if bl else {},
+            repo_class=parse_repo_class(rc) if rc else {},
+            codeowners=parse_codeowners(co) if co else [],
+        )
 
     def exception_by_id(self, ex_id: str) -> ExEntry | None:
         for e in self.exceptions:

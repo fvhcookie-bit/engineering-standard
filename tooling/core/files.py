@@ -6,9 +6,22 @@
 
 from __future__ import annotations
 
+import fnmatch
 from pathlib import Path
 
 DEFAULT_MAX_FILE_BYTES = 5 * 1024 * 1024  # > 5 МБ — пропуск с info (гайдлайн §6.3)
+
+
+def glob_matches(path: str, glob: str) -> bool:
+    """fnmatch + поддержка '**/' как «ноль или больше каталогов»."""
+    if fnmatch.fnmatch(path, glob):
+        return True
+    alt = glob
+    while alt.startswith("**/"):
+        alt = alt[3:]
+        if fnmatch.fnmatch(path, alt):
+            return True
+    return False
 
 
 class PathEscape(Exception):
@@ -34,3 +47,17 @@ class RepoFiles:
         if target.stat().st_size > self._max:
             return None
         return target.read_text(encoding="utf-8", errors="replace")
+
+    def list_files(self) -> list[str]:
+        """Все файлы дерева (кроме .git), относительные пути, отсортированы."""
+        if self._root is None:
+            return []
+        out: list[str] = []
+        for p in self._root.rglob("*"):
+            if not p.is_file():
+                continue
+            rel = p.relative_to(self._root).as_posix()
+            if rel.startswith(".git/") or "/.git/" in "/" + rel:
+                continue
+            out.append(rel)
+        return sorted(out)

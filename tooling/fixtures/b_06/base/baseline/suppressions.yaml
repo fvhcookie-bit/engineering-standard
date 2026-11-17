@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "counts": {},
+  "fingerprint": {
+    "ruff": {
+      "pyproject.toml": "sha256:755cc89bc4dd80f64933551a2738810296be94219e18f552ca1d630b2e81dddf"
+    }
+  },
+  "generated_by": "gate-runner init"
+}

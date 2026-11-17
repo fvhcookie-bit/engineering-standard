@@ -1,0 +1,32 @@
+{
+  "gate": "q11_suppressions",
+  "mode": "diff",
+  "config": {
+    "dictionary": "tooling/dictionaries/python.yaml",
+    "language_ext": {
+      "python": [
+        ".py"
+      ]
+    },
+    "config_files": [
+      "**/.eslintrc.json",
+      "**/eslint.config.json",
+      "**/pyproject.toml",
+      "**/.mypy.ini",
+      "**/setup.cfg",
+      "**/.github/workflows/*.yml"
+    ],
+    "baseline_paths": [
+      "baseline/**",
+      "dictionaries/**"
+    ]
+  },
+  "expect": {
+    "status": "FAIL",
+    "codes": [
+      "BASELINE_GROWTH",
+      "SUPPRESS_NO_EXID"
+    ],
+    "labels": []
+  }
+}

@@ -1,0 +1,7 @@
+# baseline подавлений (храповик Q-11)
+counts:
+  noqa:
+    src/**: 0
+fingerprint: {}
+generated_by: gate-runner init
+schema: 1
