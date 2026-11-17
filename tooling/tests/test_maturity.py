@@ -1,18 +1,19 @@
-"""D-3: метрика зрелости считается по итоговой таблице EP и публикуется."""
+"""D-3: метрика зрелости считается по итоговой таблице EP и публикуется.
 
-import sys
+Импорт сверху: conftest добавляет каталог tools/ в sys.path до загрузки
+тестовых модулей — подавления импорта не требуются (Q-11 самогейт).
+"""
+
+import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "tools"))
+from maturity import compute
 
-from maturity import compute  # noqa: E402
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_compute_counts_match_table():
     ep = (ROOT / "standards" / "ENGINEERING_PRINCIPLES.md").read_text(encoding="utf-8")
-    import re
-
     table_rows = [ln for ln in ep.splitlines()
                   if re.match(r"^\| [A-H]\d \| .+ \| (ОБЯЗ|РЕК|УСЛ)", ln)]
     obyaz = [ln for ln in table_rows if " ОБЯЗ |" in ln]

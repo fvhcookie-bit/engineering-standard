@@ -22,13 +22,18 @@ PACKS = {
 }
 
 
+def _rule_id(check_id: str) -> str:
+    """Semgrep добавляет к check_id префикс пути конфига — берём последний сегмент."""
+    return check_id.rsplit(".", 1)[-1]
+
+
 def _scan(rules: Path, target: Path) -> set[tuple[str, str]]:
     out = subprocess.run(
         [str(SEMGREP_BIN), "--config", str(rules), "--json", "--quiet", str(target)],
         capture_output=True, text=True, check=True, timeout=300,
     )
     data = json.loads(out.stdout)
-    return {(r["check_id"], r["path"]) for r in data.get("results", [])}
+    return {(_rule_id(r["check_id"]), r["path"]) for r in data.get("results", [])}
 
 
 def _scan_dir(rules: Path, directory: Path) -> set[tuple[str, str]]:
@@ -37,7 +42,8 @@ def _scan_dir(rules: Path, directory: Path) -> set[tuple[str, str]]:
         capture_output=True, text=True, check=True, timeout=300,
     )
     data = json.loads(out.stdout)
-    return {(r["check_id"], Path(r["path"]).name) for r in data.get("results", [])}
+    return {(_rule_id(r["check_id"]), Path(r["path"]).name)
+            for r in data.get("results", [])}
 
 
 @pytest.mark.parametrize("pack", list(PACKS))

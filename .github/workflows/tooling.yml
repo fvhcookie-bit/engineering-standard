@@ -12,8 +12,8 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - name: Install dev deps
@@ -21,9 +21,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r tooling/requirements.txt -r tooling/requirements-dev.txt
       - name: Unit tests (contract-first, coverage >= 80% — C-7)
-        run: python -m pytest tooling/tests -q \
-          --cov=tooling/core --cov=tooling/gates --cov=tooling/runner --cov=tooling/adapters --cov=tooling/collector \
-          --cov-report=term --cov-fail-under=80
+        run: |
+          python -m pytest tooling/tests -q \
+            --cov=tooling/core --cov=tooling/gates --cov=tooling/runner \
+            --cov=tooling/adapters --cov=tooling/collector \
+            --cov-report=term --cov-fail-under=80
       - name: Ruff
         run: python -m ruff check --config tooling/pyproject.toml tooling
       - name: Mypy strict
@@ -33,10 +35,10 @@ jobs:
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - run: pip install pyyaml
@@ -50,35 +52,16 @@ jobs:
             fi
           fi
       - name: Q-11 self-gate (companion догейтится собственным словарём)
+        env:
+          PYTHONPATH: tooling
         run: |
           python -m runner.cli run --gate q11_suppressions --diff /tmp/self.patch \
             --repo-root tooling --config tooling/self_q11.json \
             --adapter fake --out /tmp/q11_report.json
-      - uses: actions/upload-artifact@v4
+          code=$?
+          cat /tmp/q11_report.json
+          exit $code
+      - uses: actions/upload-artifact@v7
         with:
           name: q11-report
           path: /tmp/q11_report.json
-
-  # ВРЕМЕННО (план 2026-11-18, блок 1): диагностика Semgrep-правил — удалить после починки.
-  semgrep-debug:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - run: pip install semgrep
-      - name: Diagnose rules and fixtures
-        run: |
-          semgrep --version
-          echo "=== validate q17 ==="
-          semgrep --validate --config tooling/semgrep/q17-timeouts/python/rules.yaml || true
-          echo "=== scan q17 (raw json) ==="
-          semgrep --config tooling/semgrep/q17-timeouts/python/rules.yaml --json tooling/semgrep/fixtures/q17-timeouts | head -c 5000 || true
-          echo ""
-          echo "=== validate q18 ==="
-          semgrep --validate --config tooling/semgrep/q18-recursion/python/rules.yaml || true
-          echo "=== scan q18 (raw json) ==="
-          semgrep --config tooling/semgrep/q18-recursion/python/rules.yaml --json tooling/semgrep/fixtures/q18-recursion | head -c 5000 || true
-          echo ""
-          git check-ignore -v tooling/semgrep/fixtures/q17-timeouts/positive_q17-requests-get-no-timeout.py || echo "not git-ignored"
