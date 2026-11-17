@@ -1,9 +1,6 @@
 """C-7: CLI-покрытие (baseline migrate, коды ошибок) и Б-24 (детерминизм всех гейтов)."""
 
-import json
 from pathlib import Path
-
-import pytest
 
 from runner.cli import main
 from tests.harness import make_diff

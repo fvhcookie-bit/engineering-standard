@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -132,6 +133,21 @@ def _cmd_baseline(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_report(args: argparse.Namespace) -> int:
+    from collector import collect_and_write
+
+    kwargs: dict[str, object] = {"stale_days": args.stale_days}
+    if args.today:
+        kwargs["today"] = date.fromisoformat(args.today)
+    if args.exceptions:
+        kwargs["exceptions_text"] = Path(args.exceptions).read_text(encoding="utf-8")
+    if args.baseline:
+        kwargs["baseline_text"] = Path(args.baseline).read_text(encoding="utf-8")
+    out = collect_and_write(Path(args.reports_dir), Path(args.out_dir), **kwargs)
+    print(f"дашборд: {out} (+ dashboard.md)")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="gate-runner", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -153,6 +169,16 @@ def main(argv: list[str] | None = None) -> int:
     p_mig.add_argument("--repo-root", required=True, help="дерево head")
     p_mig.add_argument("--dictionary", required=True, help="словарь подавлений")
 
+    p_rep = sub.add_parser("report", help="метрики эксплуатации (D-1/D-2)")
+    p_rep_sub = p_rep.add_subparsers(dest="report_cmd", required=True)
+    p_col = p_rep_sub.add_parser("collect", help="собрать дашборд из артефактов отчётов")
+    p_col.add_argument("--reports-dir", required=True)
+    p_col.add_argument("--out-dir", required=True)
+    p_col.add_argument("--exceptions", default="", help="путь к EXCEPTIONS.md")
+    p_col.add_argument("--baseline", default="", help="путь к baseline/suppressions.yaml")
+    p_col.add_argument("--today", default="", help="дата ISO (детерминизм)")
+    p_col.add_argument("--stale-days", type=int, default=90)
+
     sub.add_parser("gates", help="список зарегистрированных гейтов")
 
     args = parser.parse_args(argv)
@@ -164,6 +190,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "baseline":
         return _cmd_baseline(args)
+    if args.command == "report":
+        return _cmd_report(args)
     return _cmd_run(args)
 
 
