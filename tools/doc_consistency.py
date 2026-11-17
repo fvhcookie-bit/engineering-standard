@@ -20,7 +20,8 @@
   TASKS       ID задач [A-D]-N существуют в таблице ROADMAP
   STAGES      M-N существует в этапах TASK_guard-gates
   VERSIONS    у каждого документа ядра есть ровно одна **Версия:**; все равны последней
-              записи changelog TRACEABILITY; README упоминает v<эта версия>
+              записи таблицы «Стандарт» в CHANGELOG.md (единая история версий, A-4);
+              README упоминает v<эта версия>
   TERMS       несущие термины §0.7 EP не переопределяются в других документах
               (единый источник — требование самого §0.7)
   CLAIMS      заявленные количества («N принцип(а/ов)», диапазон «Q-01…Q-19»)
@@ -75,6 +76,7 @@ CHECKED = CORE + GUIDELINES + ROOT_DOCS + [STATUS]
 EP = ROOT / "standards" / "ENGINEERING_PRINCIPLES.md"
 QG = ROOT / "standards" / "QUALITY_GATES.md"
 TRACE = ROOT / "standards" / "TRACEABILITY.md"
+CHANGELOG = ROOT / "CHANGELOG.md"
 TASK = ROOT / "guidelines" / "TASK_guard-gates.md"
 README = ROOT / "README.md"
 
@@ -182,19 +184,16 @@ def roadmap_task_ids() -> set[str]:
 
 
 def changelog_latest() -> tuple[int, ...]:
-    """Последняя версия из таблицы §5 TRACEABILITY (не из других таблиц документа)."""
+    """Последняя версия стандарта из CHANGELOG.md, таблица «Стандарт» (A-4).
+
+    Строки слоя принуждения начинаются с `| runner-…` и числовым регэкспом
+    не матчатся — версии runner'а не влияют на версию ядра.
+    """
     vals: list[tuple[int, ...]] = []
-    in_changelog = False
-    for ln in lines_of(TRACE):
-        if re.match(r"^#{1,6}\s+5\.", ln):
-            in_changelog = True
-            continue
-        if in_changelog and re.match(r"^#{1,6}\s", ln):
-            break
-        if in_changelog:
-            m = re.match(r"^\|\s*([\d.]+)\s*\|", ln)
-            if m:
-                vals.append(tuple(int(x) for x in m.group(1).split(".")))
+    for ln in lines_of(CHANGELOG):
+        m = re.match(r"^\|\s*([\d.]+)\s*\|", ln)
+        if m:
+            vals.append(tuple(int(x) for x in m.group(1).split(".")))
     return max(vals) if vals else ()
 
 
@@ -364,7 +363,7 @@ def run_checks() -> None:
             err("VERSIONS", f, 1, f"несколько пометок версии: {found}")
         elif tuple(int(x) for x in found[0].split(".")) != latest:
             err("VERSIONS", f, 1,
-                f"версия {found[0]} не равна последней записи changelog TRACEABILITY ({latest_str})")
+                f"версия {found[0]} не равна последней записи CHANGELOG.md ({latest_str})")
     if latest and f"v{latest_str}" not in TEXTS[rel(README)]:
         err("VERSIONS", README, 1, f"README не упоминает актуальную версию v{latest_str}")
 
