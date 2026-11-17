@@ -79,6 +79,12 @@ python -m mypy --strict tooling/core tooling/gates tooling/runner tooling/adapte
 обёртки адаптеров github/gitlab юнит-тестами не покрываются (правило проекта:
 сеть — только через FakeAdapter), плюс редкие ветки ошибок парсинга.
 
+- Сам-конфиг (`self_q11.json`): `baseline_paths` — только `tooling/baseline/**`;
+  касание словарей даёт метку `gates-change` (не блокер). Решение 2026-11-18:
+  словари companion — конфиг детекции, меняются вместе со своими генераторами
+  (`tools/generators/`), компенсация храповика (Б-7) к ним неприменима; strict-
+  separation baseline+код сохранена для настоящих baseline-файлов.
+
 ## Документирование гейта
 
 Каждый гейт получает `gates/<id>/README.md`: назначение и ссылка на критерий

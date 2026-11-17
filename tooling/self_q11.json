@@ -11,10 +11,10 @@
     "**/pyproject.toml",
     "**/.mypy.ini",
     "**/setup.cfg",
-    "**/.github/workflows/*.yml"
+    "**/.github/workflows/*.yml",
+    "tooling/dictionaries/*.yaml"
   ],
   "baseline_paths": [
-    "tooling/baseline/**",
-    "tooling/dictionaries/**"
+    "tooling/baseline/**"
   ]
 }
