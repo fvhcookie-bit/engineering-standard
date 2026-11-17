@@ -1,7 +1,7 @@
 # ENGINEERING_PRINCIPLES
 ## Инженерный стандарт для ИИ-ассистированной гражданской разработки ПО
 
-**Версия:** 1.2 · **Статус:** действующий стандарт (1.2 — трек B ROADMAP, см. `TRACEABILITY.md` §5)
+**Версия:** 1.2 · **Статус:** действующий стандарт (1.2 — трек B ROADMAP; история версий — `CHANGELOG.md`)
 **Основа:** G. J. Holzmann, *The Power of 10: Rules for Developing Safety-Critical Code*, IEEE Computer, vol. 39, no. 6, pp. 95–99, June 2006 (NASA/JPL Laboratory for Reliable Software), DOI: [10.1109/MC.2006.212](https://doi.org/10.1109/MC.2006.212)
 
 ---

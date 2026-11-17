@@ -7,7 +7,7 @@
 ## 1. Архитектура
 
 ```
-companion-репо (standards-tooling)
+companion — каталог tooling/ (monorepo)
 ├── runner/            # CLI: gate-runner (точка входа, агрегация)
 ├── gates/             # гейты: q11_suppressions/, q12_protected/, q15_verify/,
 │                      #         q16_scope/, q19_audit/, q10_api_diff/
