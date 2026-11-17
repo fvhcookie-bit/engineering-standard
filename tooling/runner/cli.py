@@ -26,6 +26,26 @@ from gates import GATES, get_gate
 EXIT_CODES = {"OK": 0, "SKIP": 0, "FAIL": 1, "UNAVAILABLE": 3}
 
 
+def _write_meta(out_path: Path, author: str, pr: int) -> Path:
+    """Метагфайл для сборщика метрик (D-1): {"author", "pr"} рядом с отчётом.
+
+    Имя согласовано с collector.collect_reports: `q11.report.json` ->
+    `q11.meta.json` (произвольное `x.json` -> `x.meta.json`).
+    """
+    name = out_path.name
+    if name.endswith(".report.json"):
+        meta_name = name[: -len(".report.json")] + ".meta.json"
+    else:
+        meta_name = name[: -len(".json")] + ".meta.json"
+    meta: dict[str, object] = {"author": author or "unknown"}
+    if pr:
+        meta["pr"] = pr
+    meta_path = out_path.with_name(meta_name)
+    meta_path.write_text(
+        json.dumps(meta, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+    return meta_path
+
+
 def _build_adapter(name: str, pr: int) -> Any:
     if name == "fake":
         return FakeAdapter()
@@ -95,7 +115,12 @@ def _cmd_run(args: argparse.Namespace) -> int:
 
     text = render_report(report)
     if args.out:
-        Path(args.out).write_text(text, encoding="utf-8", newline="\n")
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(text, encoding="utf-8", newline="\n")
+        if args.author or args.pr:
+            meta_path = _write_meta(out_path, args.author, args.pr)
+            print(f"мета: {meta_path}")
     else:
         sys.stdout.write(text)
 
@@ -170,6 +195,8 @@ def main(argv: list[str] | None = None) -> int:
     p_run.add_argument("--config", default="", help="JSON-конфиг гейта (словарь, globs, лимиты)")
     p_run.add_argument("--pr", type=int, default=0, help="номер PR (для адаптера)")
     p_run.add_argument("--adapter", choices=["fake", "github", "gitlab"], default="fake")
+    p_run.add_argument("--author", default="",
+                       help="автор изменений (пишется в *.meta.json для report collect)")
     p_run.add_argument("--out", default="", help="записать отчёт в файл (иначе stdout)")
 
     p_base = sub.add_parser("baseline", help="работа с baseline храповика")

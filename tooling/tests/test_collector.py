@@ -163,3 +163,54 @@ def test_report_collect_missing_baseline_exit_2(tmp_path):
                  "--out-dir", str(tmp_path / "out"),
                  "--baseline", str(tmp_path / "no.yaml")])
     assert code == 2
+
+
+DEMO_PATCH = (
+    "diff --git a/x.py b/x.py\n--- a/x.py\n+++ b/x.py\n"
+    "@@ -1 +1,2 @@\n line\n+clean\n"
+)
+
+
+def test_run_writes_meta_and_collector_reads_it(tmp_path):
+    patch = tmp_path / "d.patch"
+    patch.write_text(DEMO_PATCH, encoding="utf-8", newline="\n")
+    out = tmp_path / "runs" / "q11.report.json"
+    code = main(["run", "--gate", "demo_dummy", "--diff", str(patch),
+                 "--out", str(out), "--author", "alice", "--pr", "7"])
+    assert code == 0
+    meta = json.loads((tmp_path / "runs" / "q11.meta.json").read_text(encoding="utf-8"))
+    assert meta == {"author": "alice", "pr": 7}
+    dash = collect_dashboard(tmp_path / "runs", today=TODAY)
+    alice = [s for s in dash["subjects"] if s["author"] == "alice"]
+    assert len(alice) == 1
+    assert alice[0]["prs"] == 1
+
+
+def test_run_without_meta_flags_writes_no_meta(tmp_path):
+    patch = tmp_path / "d.patch"
+    patch.write_text(DEMO_PATCH, encoding="utf-8", newline="\n")
+    out = tmp_path / "runs" / "q11.report.json"
+    code = main(["run", "--gate", "demo_dummy", "--diff", str(patch), "--out", str(out)])
+    assert code == 0
+    assert not (tmp_path / "runs" / "q11.meta.json").exists()
+
+
+def test_exception_status_variants(tmp_path):
+    md = (
+        "# Реестр исключений E-C\n\n"
+        "### EX-2026-001\n"
+        "- **Принцип:** B6\n"
+        "- **Срок пересмотра:** 2099-01-01\n"
+        "- **Статус:** Активное\n\n"
+        "### EX-2026-002\n"
+        "- **Принцип:** C1\n"
+        "- **Срок пересмотра:** 2026-01-31\n"
+        "- **Статус:** активное (продлено)\n\n"
+        "### EX-2026-003\n- **Принцип:** C2\n- **Статус:** закрыто\n\n"
+        "### EX-2026-004\n- **Принцип:** C3\n- **Статус:** приостановлено\n"
+    )
+    exc = collect_dashboard(tmp_path, exceptions_text=md, today=TODAY)["exceptions"]
+    assert exc["total"] == 4
+    assert exc["active"] == 2
+    assert exc["expired_ids"] == ["EX-2026-002"]
+    assert exc["by_principle"] == {"B6": 1, "C1": 1}

@@ -51,6 +51,20 @@ python -m runner.cli run --gate demo_dummy --diff patch.patch --pr 7 --adapter f
 python -m runner.cli gates
 ```
 
+Метрики эксплуатации (D-1/D-2): CI пишет в одну папку артефакты
+`*.report.json` (отчёт schema:1) и `*.meta.json` (`{"author": "...", "pr": 7}`,
+создаётся флагами `--author`/`--pr`), затем сборщик строит дашборд
+(JSON + Markdown, только агрегаты):
+
+```
+python -m runner.cli run --gate q11_suppressions --diff d.patch \
+  --author alice --pr 7 --out runs/q11.report.json
+python -m runner.cli report collect --reports-dir runs --out-dir dashboard \
+  --exceptions EXCEPTIONS.md --baseline baseline/suppressions.yaml
+python -m runner.cli baseline migrate --baseline baseline/suppressions.yaml \
+  --diff renames.patch --repo-root . --dictionary tooling/dictionaries/python.yaml
+```
+
 Тесты (контракт-first; fixtures — мини-дифы + expected.json):
 
 ```

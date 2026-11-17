@@ -99,7 +99,9 @@ def collect_dashboard(
     # D-2: исключения (из EXCEPTIONS.md через парсер реестра)
     if exceptions_text is not None:
         entries = parse_exceptions_md(exceptions_text)
-        active = [e for e in entries if e.status.lower() == "активное"]
+        # нормализация: «активное», «Активное», «активное (продлено)» — активные
+        active = [e for e in entries
+                  if e.status.strip().lower().startswith("активн")]
         expired = [e for e in active if e.is_expired(today)]
         by_principle: dict[str, int] = {}
         for e in active:
