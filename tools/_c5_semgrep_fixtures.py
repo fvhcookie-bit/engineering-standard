@@ -33,18 +33,29 @@ Q17 = {
 }
 
 Q18 = {
+    # позитив: обе идиомы (return-форма и bare-форма) — их матчат разные паттерны
     "q18-recursion-no-depth": (
-        "def walk(node):\n    return walk(node.next)\n",
-        "def walk(node, depth):\n    if depth > 64:\n        raise ValueError\n    return walk(node.next, depth + 1)\n"),
+        "def walk_a(node):\n    return walk_a(node.next)\n\n"
+        "def walk_b(node):\n    walk_b(node.next)\n    return None\n",
+        "def walk(node, depth):\n    if depth > 64:\n        raise ValueError\n"
+        "    return walk(node.next, depth + 1)\n\n"
+        "def visit(root):\n    stack = [root]\n    while stack:\n"
+        "        node = stack.pop()\n        stack.extend(node.children)\n"),
     "q18-infinite-read-loop": (
         "while True:\n    data = stream.read(1024)\n",
-        "while True:\n    data = stream.read(1024)\n    if not data:\n        break\n" if False else "data = stream.read(1024)\n"),
+        "attempts = 0\nwhile True:\n    attempts += 1\n"
+        "    if attempts > 10:\n        raise RuntimeError\n"
+        "    data = stream.read(1024)\n"),
     "q18-infinite-recv-loop": (
         "while True:\n    packet = sock.recv(4096)\n",
-        "packet = sock.recv(4096)\n"),
+        "attempts = 0\nwhile True:\n    attempts += 1\n"
+        "    if attempts > 10:\n        raise RuntimeError\n"
+        "    packet = sock.recv(4096)\n"),
     "q18-infinite-readline-loop": (
         "while True:\n    line = f.readline()\n",
-        "line = f.readline()\n"),
+        "attempts = 0\nwhile True:\n    attempts += 1\n"
+        "    if attempts > 10:\n        raise RuntimeError\n"
+        "    line = f.readline()\n"),
 }
 
 

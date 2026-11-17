@@ -136,6 +136,17 @@ def _cmd_baseline(args: argparse.Namespace) -> int:
 def _cmd_report(args: argparse.Namespace) -> int:
     from collector import collect_and_write
 
+    reports_dir = Path(args.reports_dir)
+    if not reports_dir.is_dir():
+        print(f"ошибка конфигурации: папка отчётов не найдена: {args.reports_dir}",
+              file=sys.stderr)
+        return 2
+    for opt in ("exceptions", "baseline"):
+        val = getattr(args, opt)
+        if val and not Path(val).is_file():
+            print(f"ошибка конфигурации: файл не найден: {val}", file=sys.stderr)
+            return 2
+
     kwargs: dict[str, object] = {"stale_days": args.stale_days}
     if args.today:
         kwargs["today"] = date.fromisoformat(args.today)

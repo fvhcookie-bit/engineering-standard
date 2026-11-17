@@ -55,9 +55,11 @@ python -m runner.cli gates
 
 ```
 pip install -r tooling/requirements.txt -r tooling/requirements-dev.txt
-python -m pytest tooling/tests -q
+python -m pytest tooling/tests -q \
+  --cov=tooling/core --cov=tooling/gates --cov=tooling/runner --cov=tooling/adapters --cov=tooling/collector \
+  --cov-report=term --cov-fail-under=80
 python -m ruff check tooling
-python -m mypy --strict tooling/core tooling/gates tooling/runner tooling/adapters
+python -m mypy --strict tooling/core tooling/gates tooling/runner tooling/adapters tooling/collector.py
 ```
 
 ## Документирование гейта
