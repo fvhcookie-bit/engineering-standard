@@ -71,6 +71,30 @@ def test_report_is_deterministic():
     assert a == b
 
 
+def test_missing_binary_is_unavailable():
+    """Нет исполняемого файла инструмента — UNAVAILABLE, а не падение runner'а."""
+    result = _run({"tools": [{"language": "python",
+                              "cmd": ["no-such-binary-q10-xyz", "--version"]}],
+                   "base": "main", "head": "HEAD"})
+    assert result.status.value == "UNAVAILABLE"
+    assert "python" in (result.reason or "")
+
+
+def test_tool_timeout_is_unavailable(monkeypatch):
+    import subprocess as sp
+
+    from gates.q10_api_diff import gate as q10_gate
+
+    def _boom(cmd, **kwargs):
+        raise sp.TimeoutExpired(cmd=cmd, timeout=600)
+
+    monkeypatch.setattr(q10_gate.subprocess, "run", _boom)
+    result = _run({"tools": [{"language": "python", "cmd": ["slow-tool"]}],
+                   "base": "main", "head": "HEAD"})
+    assert result.status.value == "UNAVAILABLE"
+    assert "python" in (result.reason or "")
+
+
 def sys_exec() -> str:
     import sys
 

@@ -62,7 +62,14 @@ class Q10ApiDiffGate:
         for lang in sorted(touched_languages):
             cmd = [a.replace("{base}", base).replace("{head}", head)
                    for a in tools[lang]]
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+            try:
+                proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+            except (OSError, subprocess.TimeoutExpired) as exc:
+                # нет бинарника / прав / инструмент завис — не молчаливый OK
+                result.status = Status.UNAVAILABLE
+                result.reason = (f"api-diff инструмент для {lang} не выполнен "
+                                 f"(отсутствует или тайм-аут 600 с): {exc}")
+                return result.finalize()
             if proc.returncode != 0:
                 result.status = Status.UNAVAILABLE
                 result.reason = f"api-diff инструмент для {lang} завершился с ошибкой {proc.returncode}"

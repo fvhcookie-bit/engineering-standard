@@ -11,8 +11,12 @@ from typing import Any
 
 
 class GitHubAdapter:
-    def __init__(self, repo: str, token: str | None = None, base_url: str = "https://api.github.com") -> None:
-        self._repo = repo
+    def __init__(self, repo: str | None = None, token: str | None = None,
+                 base_url: str = "https://api.github.com") -> None:
+        self._repo = repo or os.environ.get("GITHUB_REPOSITORY", "")
+        if not self._repo:
+            raise ValueError(
+                "репозиторий не задан: передайте --repo или переменную GITHUB_REPOSITORY")
         self._token = token or os.environ.get("GITHUB_TOKEN", "")
         self._base = base_url.rstrip("/")
 

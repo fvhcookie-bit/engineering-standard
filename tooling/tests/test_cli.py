@@ -36,3 +36,43 @@ def test_clean_diff_ok(tmp_path):
         encoding="utf-8",
     )
     assert main(["run", "--gate", "demo_dummy", "--diff", str(patch)]) == 0
+
+
+CLEAN_PATCH = (
+    "diff --git a/x.py b/x.py\n--- a/x.py\n+++ b/x.py\n"
+    "@@ -1 +1,2 @@\n line\n+clean\n"
+)
+
+
+def _clean(tmp_path):
+    patch = tmp_path / "clean.patch"
+    patch.write_text(CLEAN_PATCH, encoding="utf-8", newline="\n")
+    return patch
+
+
+def test_github_adapter_from_env(tmp_path, monkeypatch):
+    monkeypatch.setenv("GITHUB_REPOSITORY", "octo/demo")
+    assert main(["run", "--gate", "demo_dummy", "--diff", str(_clean(tmp_path)),
+                 "--adapter", "github"]) == 0
+
+
+def test_github_adapter_without_repo_is_config_error(tmp_path, monkeypatch):
+    monkeypatch.delenv("GITHUB_REPOSITORY", raising=False)
+    assert main(["run", "--gate", "demo_dummy", "--diff", str(_clean(tmp_path)),
+                 "--adapter", "github"]) == 2
+
+
+def test_github_explicit_repo_overrides_env(tmp_path, monkeypatch):
+    monkeypatch.setenv("GITHUB_REPOSITORY", "octo/env")
+    assert main(["run", "--gate", "demo_dummy", "--diff", str(_clean(tmp_path)),
+                 "--adapter", "github", "--repo", "octo/arg"]) == 0
+
+
+def test_gitlab_adapter_env_and_config_error(tmp_path, monkeypatch):
+    patch = _clean(tmp_path)
+    monkeypatch.setenv("CI_PROJECT_ID", "42")
+    assert main(["run", "--gate", "demo_dummy", "--diff", str(patch),
+                 "--adapter", "gitlab"]) == 0
+    monkeypatch.delenv("CI_PROJECT_ID", raising=False)
+    assert main(["run", "--gate", "demo_dummy", "--diff", str(patch),
+                 "--adapter", "gitlab"]) == 2

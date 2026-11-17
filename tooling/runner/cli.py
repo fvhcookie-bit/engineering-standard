@@ -46,17 +46,17 @@ def _write_meta(out_path: Path, author: str, pr: int) -> Path:
     return meta_path
 
 
-def _build_adapter(name: str, pr: int) -> Any:
+def _build_adapter(name: str, repo: str, project_id: str) -> Any:
     if name == "fake":
         return FakeAdapter()
     if name == "github":
         from adapters.github import GitHubAdapter
 
-        return GitHubAdapter(repo="OWNER/REPO")
+        return GitHubAdapter(repo=repo or None)
     if name == "gitlab":
         from adapters.gitlab import GitLabAdapter
 
-        return GitLabAdapter(project_id="PROJECT")
+        return GitLabAdapter(project_id=project_id or None)
     raise ValueError(f"неизвестный адаптер: {name}")
 
 
@@ -99,11 +99,17 @@ def _cmd_run(args: argparse.Namespace) -> int:
         print(f"ошибка конфигурации: {exc}", file=sys.stderr)
         return 2
 
+    try:
+        api = _build_adapter(args.adapter, args.repo, args.project_id)
+    except ValueError as exc:
+        print(f"ошибка конфигурации: {exc}", file=sys.stderr)
+        return 2
+
     inputs = GateInputs(
         diff=diff,
         files=RepoFiles(root=root),
         registries=Registries.from_repo(root) if root else Registries.empty(),
-        api=_build_adapter(args.adapter, args.pr),
+        api=api,
     )
 
     result = gate.run(inputs, config=config)
@@ -195,6 +201,10 @@ def main(argv: list[str] | None = None) -> int:
     p_run.add_argument("--config", default="", help="JSON-конфиг гейта (словарь, globs, лимиты)")
     p_run.add_argument("--pr", type=int, default=0, help="номер PR (для адаптера)")
     p_run.add_argument("--adapter", choices=["fake", "github", "gitlab"], default="fake")
+    p_run.add_argument("--repo", default="",
+                       help="OWNER/REPO для github (иначе GITHUB_REPOSITORY)")
+    p_run.add_argument("--project-id", default="",
+                       help="ID проекта для gitlab (иначе CI_PROJECT_ID)")
     p_run.add_argument("--author", default="",
                        help="автор изменений (пишется в *.meta.json для report collect)")
     p_run.add_argument("--out", default="", help="записать отчёт в файл (иначе stdout)")

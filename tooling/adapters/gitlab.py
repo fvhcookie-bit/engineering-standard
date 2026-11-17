@@ -10,10 +10,16 @@ from urllib.parse import quote
 
 
 class GitLabAdapter:
-    def __init__(self, project_id: str, token: str | None = None, base_url: str = "https://gitlab.com/api/v4") -> None:
-        self._project = quote(str(project_id), safe="")
+    def __init__(self, project_id: str | None = None, token: str | None = None,
+                 base_url: str | None = None) -> None:
+        pid = project_id or os.environ.get("CI_PROJECT_ID", "")
+        if not pid:
+            raise ValueError(
+                "проект не задан: передайте --project-id или переменную CI_PROJECT_ID")
+        self._project = quote(str(pid), safe="")
         self._token = token or os.environ.get("GITLAB_TOKEN", "")
-        self._base = base_url.rstrip("/")
+        base = base_url or os.environ.get("CI_API_V4_URL") or "https://gitlab.com/api/v4"
+        self._base = base.rstrip("/")
 
     def _headers(self) -> dict[str, str]:
         return {"PRIVATE-TOKEN": self._token}

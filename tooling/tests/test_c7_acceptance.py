@@ -52,9 +52,9 @@ def test_github_and_gitlab_adapter_branches(tmp_path):
         "diff --git a/x.py b/x.py\n--- a/x.py\n+++ b/x.py\n@@ -1 +1,2 @@\n line\n+clean\n",
         encoding="utf-8")
     assert main(["run", "--gate", "demo_dummy", "--diff", str(patch),
-                 "--adapter", "github"]) == 0
+                 "--adapter", "github", "--repo", "octo/demo"]) == 0
     assert main(["run", "--gate", "demo_dummy", "--diff", str(patch),
-                 "--adapter", "gitlab"]) == 0
+                 "--adapter", "gitlab", "--project-id", "42"]) == 0
 
 
 def test_b24_all_gates_deterministic(tmp_path):
