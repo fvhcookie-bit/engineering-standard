@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "gate": "DEMO-01",
+  "gate_version": "1.0.0",
+  "status": "FAIL",
+  "reason": "",
+  "findings": [
+    {
+      "code": "DEMO_FORBIDDEN_MARKER",
+      "severity": "error",
+      "path": "src/app.py",
+      "line": 4,
+      "message": "добавлена строка с запрещённым демо-маркером FORBIDDEN-DEMO",
+      "evidence": "FORBIDDEN-DEMO appears here"
+    }
+  ],
+  "labels": [
+    "demo-label"
+  ],
+  "second_reviewer_required": false,
+  "stats": {
+    "added_lines": 3,
+    "files_scanned": 1
+  }
+}
