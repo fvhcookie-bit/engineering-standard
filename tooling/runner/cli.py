@@ -117,7 +117,9 @@ def _cmd_baseline(args: argparse.Namespace) -> int:
         return 2
     from core.dictionary import load_dictionary as _ld
     patterns = _ld(Path(args.dictionary).read_text(encoding="utf-8"))
-    baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+    from core.registries import load_baseline
+
+    baseline = load_baseline(baseline_path.read_text(encoding="utf-8"))
     diff_files = parse_unified_diff(Path(args.diff).read_text(encoding="utf-8", errors="replace"))
     new_baseline = migrate(baseline, RepoFiles(root=repo_root), patterns, {}, diff_files)
     import yaml
