@@ -1,0 +1,5 @@
+# Профиль стандарта v1.2: clippy pedantic минус спорные (причины — комментарии PR).
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+# спорные pedantic-правила отключаются точечно с причиной

@@ -1,0 +1,13 @@
+# Профиль стандарта v1.2: строгий detekt (+ ErrorProne в сборке).
+build:
+  maxIssues: 0
+complexity:
+  LongMethod:
+    active: true
+    threshold: 60
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 10
+exceptions:
+  TooGenericExceptionCaught:
+    active: true

@@ -1,0 +1,10 @@
+# Профиль стандарта v1.2: core + bugprone + concurrency.
+Checks: >
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  bugprone-*,
+  concurrency-*,
+  misc-*,
+  -misc-non-private-member-variables-in-classes
+WarningsAsErrors: 'clang-diagnostic-*,clang-analyzer-*'

@@ -1,0 +1,15 @@
+# Профиль стандарта v1.2: строгий набор для Go.
+linters:
+  enable:
+    - vet
+    - errcheck        # D3: ошибки не глотаются
+    - staticcheck
+    - gocyclo
+    - funlen
+    - gosec           # G-домен
+
+linters-settings:
+  gocyclo:
+    min-complexity: 10
+  funlen:
+    lines: 60

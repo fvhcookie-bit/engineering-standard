@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "no-explicit-any": "error",
+    "no-floating-promises": "error",
+    "no-misused-promises": "error",
+    "strict-boolean-expressions": "error"
+  }
+}
