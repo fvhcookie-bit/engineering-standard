@@ -3,7 +3,11 @@
 
 from __future__ import annotations
 
-from typing import Protocol
+from typing import Any, Protocol
+
+
+class AdapterUnavailable(Exception):
+    """Хостинг/CI недоступен или данных нет (fail-closed -> UNAVAILABLE)."""
 
 
 class Adapter(Protocol):
@@ -17,4 +21,12 @@ class Adapter(Protocol):
 
     def list_review_logins(self, pr_number: int) -> list[str]:
         """Логины уже оставивших ревью (нужно L0/второму ревьюеру)."""
+        ...
+
+    def get_branch_protection(self, branch: str) -> dict[str, Any] | None:
+        """Настройки защиты ветки; None — ветка не защищена (L0)."""
+        ...
+
+    def get_codeowners(self) -> str | None:
+        """Текст CODEOWNERS; None — файла нет (L0)."""
         ...

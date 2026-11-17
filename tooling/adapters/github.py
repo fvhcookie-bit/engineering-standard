@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import os
+from typing import Any
 
 
 class GitHubAdapter:
@@ -40,3 +41,34 @@ class GitHubAdapter:
         resp = requests.get(url, headers=self._headers(), timeout=30)
         data = resp.json() if resp.ok else []
         return [str(r.get("user", {}).get("login", "")) for r in data if isinstance(r, dict)]
+
+    def get_branch_protection(self, branch: str) -> dict[str, Any] | None:
+        import requests
+
+        from adapters.base import AdapterUnavailable
+
+        url = f"{self._base}/repos/{self._repo}/branches/{branch}/protection"
+        resp = requests.get(url, headers=self._headers(), timeout=30)
+        if resp.status_code == 404:
+            return None  # не защищена (или нет прав админа — см. README гейта)
+        if not resp.ok:
+            raise AdapterUnavailable(f"GitHub API: {resp.status_code}")
+        return dict(resp.json())
+
+    def get_codeowners(self) -> str | None:
+        import base64
+
+        import requests
+
+        from adapters.base import AdapterUnavailable
+
+        for path in (".github/CODEOWNERS", "CODEOWNERS", "docs/CODEOWNERS"):
+            url = f"{self._base}/repos/{self._repo}/contents/{path}"
+            resp = requests.get(url, headers=self._headers(), timeout=30)
+            if resp.status_code == 404:
+                continue
+            if not resp.ok:
+                raise AdapterUnavailable(f"GitHub API: {resp.status_code}")
+            data = resp.json()
+            return base64.b64decode(data.get("content", "")).decode("utf-8")
+        return None
