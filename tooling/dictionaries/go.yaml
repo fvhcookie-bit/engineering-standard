@@ -13,4 +13,4 @@ patterns:
   languages:
   - go
   positive: 'cmd := exec.Command(a) // #nosec G204'
-  negative: '// #nosec как текст'
+  negative: cmd := exec.Command(a) // безопасно по ревью

@@ -2,7 +2,7 @@
 import yaml
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 DICT_DIR = ROOT / "tooling" / "dictionaries"
 FIXTURES = DICT_DIR / "fixtures"
 
@@ -51,7 +51,7 @@ write_dict("go", "go", [
     {"id": "nolint", "regex": r"//\s*nolint(?::\s*[A-Za-z, ]+)?", "languages": ["go"],
      "positive": "x := 1 //nolint:errcheck", "negative": "x := 1 // обычный комментарий"},
     {"id": "nosec", "regex": r"//\s*#nosec\b", "languages": ["go"],
-     "positive": "cmd := exec.Command(a) // #nosec G204", "negative": "// #nosec как текст"},
+     "positive": "cmd := exec.Command(a) // #nosec G204", "negative": "cmd := exec.Command(a) // безопасно по ревью"},
 ], lang_ext={"go": [".go"]})
 
 write_dict("rust", "rust", [
@@ -67,7 +67,7 @@ write_dict("rust", "rust", [
 
 write_dict("java", "java", [
     {"id": "suppresswarnings", "regex": r"@SuppressWarnings\b", "languages": ["java", "kotlin"],
-     "positive": "@SuppressWarnings(\"unchecked\")\nList l = raw;", "negative": "// @SuppressWarnings как текст"},
+     "positive": "@SuppressWarnings(\"unchecked\")\nList l = raw;", "negative": "// проверка без подавления предупреждений"},
     {"id": "disabled", "regex": r"@Disabled\b", "languages": ["java"],
      "positive": "@Disabled(\"env\")\n@Test void t() {}", "negative": "@Test void works() {}"},
 ], lang_ext={"java": [".java"], "kotlin": [".kt"]})

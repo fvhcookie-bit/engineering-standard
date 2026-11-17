@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = ROOT / "tooling" / "fixtures"
 
 
@@ -108,25 +108,6 @@ make("b_16", "q15_verify",
 print("fixtures C-3:", len([d for d in FIXTURES.iterdir() if d.name in
       ("b_09", "b_11", "b_12", "b_13", "b_14", "b_15", "b_16")]), "сценариев")
 
-# --- параметризованный тест: api/pr_text/commit_sha из сценария ---
-p = ROOT / "tooling" / "tests" / "test_c2_fixtures.py"
-t = p.read_text(encoding="utf-8")
-old = (
-    "    inputs = GateInputs(diff=parse_unified_diff(diff_text), files=files,\n"
-    "                        registries=registries, api=FakeAdapter())"
-)
-new = (
-    "    api_spec = spec.get(\"api\", {})\n"
-    "    api = FakeAdapter(\n"
-    "        commit_status=api_spec.get(\"commit_status\", \"success\"),\n"
-    "        run_ownership={int(k): v for k, v in api_spec.get(\"run_ownership\", {}).items()},\n"
-    "        task_files={k: v for k, v in api_spec.get(\"task_files\", {}).items()},\n"
-    "    )\n"
-    "    inputs = GateInputs(diff=parse_unified_diff(diff_text), files=files,\n"
-    "                        registries=registries, api=api,\n"
-    "                        pr_text=spec.get(\"pr_text\", \"\"),\n"
-    "                        commit_sha=spec.get(\"commit_sha\", \"\"))"
-)
-assert old in t
-p.write_text(t.replace(old, new), encoding="utf-8", newline="\n")
-print("test loop: api/pr_text подключены")
+# Примечание: в C-3 этот скрипт также латал test_c2_fixtures.py (подключение
+# api/pr_text/commit_sha в тестовый цикл) — патч давно применён и удалён из
+# генератора: он невоспроизводим и не относится к генерации fixtures.

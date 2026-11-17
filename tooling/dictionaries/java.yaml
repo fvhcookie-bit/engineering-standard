@@ -10,7 +10,7 @@ patterns:
   positive: '@SuppressWarnings("unchecked")
 
     List l = raw;'
-  negative: // @SuppressWarnings как текст
+  negative: // проверка без подавления предупреждений
 - id: disabled
   regex: '@Disabled\b'
   languages:
