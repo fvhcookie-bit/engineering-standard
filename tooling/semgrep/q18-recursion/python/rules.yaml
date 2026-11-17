@@ -1,0 +1,41 @@
+rules:
+  - id: q18-recursion-no-depth
+    message: "A2/Q-18: рекурсия без явного предела глубины"
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: |
+          def $F(...):
+              ...
+              $F(...)
+      - pattern-not: |
+          def $F(..., $DEPTH, ...):
+              ...
+              $F(..., $DEPTH + 1, ...)
+
+  - id: q18-infinite-read-loop
+    message: "A3/Q-18: бесконечный цикл чтения потока без счётчика-максимума"
+    severity: ERROR
+    languages: [python]
+    pattern: |
+      while True:
+          ...
+          $DATA = $STREAM.read(...)
+
+  - id: q18-infinite-recv-loop
+    message: "A3/Q-18: бесконечный цикл приёма из сокета без счётчика"
+    severity: ERROR
+    languages: [python]
+    pattern: |
+      while True:
+          ...
+          $PACKET = $SOCK.recv(...)
+
+  - id: q18-infinite-readline-loop
+    message: "A3/Q-18: бесконечный цикл readline без счётчика-максимума"
+    severity: ERROR
+    languages: [python]
+    pattern: |
+      while True:
+          ...
+          $LINE = $F.readline()

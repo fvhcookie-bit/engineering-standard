@@ -1,0 +1,69 @@
+rules:
+  - id: q17-requests-get-no-timeout
+    message: "B6/Q-17: HTTP GET без тайм-аута — внешнее взаимодействие обязано иметь лимит"
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: requests.get(...)
+      - pattern-not: requests.get(..., timeout=$T, ...)
+
+  - id: q17-requests-post-no-timeout
+    message: "B6/Q-17: HTTP POST без тайм-аута"
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: requests.post(...)
+      - pattern-not: requests.post(..., timeout=$T, ...)
+
+  - id: q17-requests-request-no-timeout
+    message: "B6/Q-17: HTTP-запрос через requests.request без тайм-аута"
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: requests.request($M, ...)
+      - pattern-not: requests.request($M, ..., timeout=$T, ...)
+
+  - id: q17-httpx-no-timeout
+    message: "B6/Q-17: httpx-запрос без тайм-аута"
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern-either:
+          - pattern: httpx.get(...)
+          - pattern: httpx.post(...)
+          - pattern: httpx.put(...)
+          - pattern: httpx.patch(...)
+          - pattern: httpx.delete(...)
+      - pattern-not: httpx.$M(..., timeout=$T, ...)
+
+  - id: q17-urlopen-no-timeout
+    message: "B6/Q-17: urlopen без тайм-аута"
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: urllib.request.urlopen($URL, ...)
+      - pattern-not: urllib.request.urlopen($URL, ..., timeout=$T, ...)
+
+  - id: q17-socket-create-connection-no-timeout
+    message: "B6/Q-17: socket-соединение без тайм-аута"
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: socket.create_connection(...)
+      - pattern-not: socket.create_connection(..., timeout=$T)
+
+  - id: q17-psycopg-connect-no-timeout
+    message: "B6/Q-17: подключение к БД без connect_timeout"
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: psycopg.connect($DSN, ...)
+      - pattern-not: psycopg.connect($DSN, ..., connect_timeout=$T, ...)
+
+  - id: q17-subprocess-run-no-timeout
+    message: "B6/Q-17: subprocess.run без тайм-аута — внешний процесс обязан иметь лимит"
+    severity: ERROR
+    languages: [python]
+    patterns:
+      - pattern: subprocess.run(...)
+      - pattern-not: subprocess.run(..., timeout=$T, ...)
