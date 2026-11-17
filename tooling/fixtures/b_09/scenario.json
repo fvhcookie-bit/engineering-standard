@@ -1,0 +1,40 @@
+{
+  "gate": "q12_protected",
+  "mode": "diff",
+  "config": {
+    "protected_paths": [
+      {
+        "glob": "golden/**",
+        "label": "rule-change",
+        "category": "golden",
+        "oracle": true
+      },
+      {
+        "glob": "tests/**",
+        "label": "test-change",
+        "category": "tests"
+      },
+      {
+        "glob": "**/tariffs.json",
+        "label": "rule-change",
+        "category": "tariffs"
+      }
+    ],
+    "code_globs": [
+      "src/**"
+    ],
+    "q11_config_globs": [
+      "**/tariffs.json"
+    ]
+  },
+  "expect": {
+    "status": "OK",
+    "codes": [
+      "PROTECTED_PATH_TOUCHED"
+    ],
+    "labels": [
+      "test-change",
+      "second-reviewer-required"
+    ]
+  }
+}

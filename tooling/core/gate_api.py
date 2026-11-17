@@ -69,6 +69,8 @@ class GateInputs:
     files: RepoFiles
     registries: Registries
     api: Any  # adapters.base.Adapter (Protocol); Any из-за типового цикла адаптеров
+    pr_text: str = ""  # текст PR — ТОЛЬКО объект проверки (Q-15), не источник фактов
+    commit_sha: str = ""  # SHA проверяемого коммита (Q-15 сверяет прогоны CI)
 
 
 class Gate(Protocol):

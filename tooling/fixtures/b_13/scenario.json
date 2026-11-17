@@ -1,0 +1,19 @@
+{
+  "gate": "q16_scope",
+  "mode": "diff",
+  "config": {
+    "task_id": "PROJ-42",
+    "mechanical_globs": [],
+    "line_limit": 600
+  },
+  "expect": {
+    "status": "SKIP",
+    "codes": [],
+    "labels": []
+  },
+  "api": {
+    "task_files": {
+      "PROJ-42": null
+    }
+  }
+}

@@ -72,3 +72,31 @@ class GitHubAdapter:
             data = resp.json()
             return base64.b64decode(data.get("content", "")).decode("utf-8")
         return None
+
+    def get_commit_check_status(self, commit_sha: str) -> str | None:
+        import requests
+
+        from adapters.base import AdapterUnavailable
+
+        url = f"{self._base}/repos/{self._repo}/commits/{commit_sha}/status"
+        resp = requests.get(url, headers=self._headers(), timeout=30)
+        if not resp.ok:
+            raise AdapterUnavailable(f"GitHub API: {resp.status_code}")
+        state = resp.json().get("state")
+        return str(state) if state else None
+
+    def run_belongs_to_commit(self, run_id: int, commit_sha: str) -> bool:
+        import requests
+
+        from adapters.base import AdapterUnavailable
+
+        url = f"{self._base}/repos/{self._repo}/actions/runs/{run_id}"
+        resp = requests.get(url, headers=self._headers(), timeout=30)
+        if not resp.ok:
+            raise AdapterUnavailable(f"GitHub API: {resp.status_code}")
+        return str(resp.json().get("head_sha", "")) == commit_sha
+
+    def get_task_files(self, task_id: str) -> list[str] | None:
+        from adapters.base import AdapterUnavailable
+
+        raise AdapterUnavailable(f"трекер задач не подключён (task {task_id})")

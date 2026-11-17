@@ -56,8 +56,16 @@ def test_acceptance_scenario(scenario: Path, tmp_path: Path):
         dict_path = next(p for p in candidates if p.is_file())
         cfg["patterns"] = load_dictionary(dict_path.read_text(encoding="utf-8"))
 
+    api_spec = spec.get("api", {})
+    api = FakeAdapter(
+        commit_status=api_spec.get("commit_status", "success"),
+        run_ownership={int(k): v for k, v in api_spec.get("run_ownership", {}).items()},
+        task_files={k: v for k, v in api_spec.get("task_files", {}).items()},
+    )
     inputs = GateInputs(diff=parse_unified_diff(diff_text), files=files,
-                        registries=registries, api=FakeAdapter())
+                        registries=registries, api=api,
+                        pr_text=spec.get("pr_text", ""),
+                        commit_sha=spec.get("commit_sha", ""))
     result = get_gate(spec["gate"]).run(inputs, config=cfg)
 
     expect = spec["expect"]

@@ -30,3 +30,15 @@ class Adapter(Protocol):
     def get_codeowners(self) -> str | None:
         """Текст CODEOWNERS; None — файла нет (L0)."""
         ...
+
+    def get_commit_check_status(self, commit_sha: str) -> str | None:
+        """Итог конвейера по коммиту: "success" | "failure" | None (нет данных)."""
+        ...
+
+    def run_belongs_to_commit(self, run_id: int, commit_sha: str) -> bool:
+        """Прогон с таким id выполнялся на этом коммите (Б-16)."""
+        ...
+
+    def get_task_files(self, task_id: str) -> list[str] | None:
+        """Список файлов задачи из трекера; None — список не заведён (Б-13)."""
+        ...

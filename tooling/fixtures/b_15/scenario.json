@@ -1,0 +1,26 @@
+{
+  "gate": "q15_verify",
+  "mode": "diff",
+  "config": {
+    "success_markers": [
+      "тесты прошли",
+      "tests pass"
+    ],
+    "known_commands": [
+      "pytest"
+    ],
+    "pr": 7
+  },
+  "expect": {
+    "status": "FAIL",
+    "codes": [
+      "SUCCESS_MARKER_AT_RED"
+    ],
+    "labels": []
+  },
+  "api": {
+    "commit_status": "failure"
+  },
+  "pr_text": "тесты прошли\nстоп-события: нет\n",
+  "commit_sha": "abc123def"
+}

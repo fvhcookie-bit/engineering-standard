@@ -1,0 +1,29 @@
+{
+  "gate": "q15_verify",
+  "mode": "diff",
+  "config": {
+    "success_markers": [
+      "тесты прошли",
+      "tests pass"
+    ],
+    "known_commands": [
+      "pytest"
+    ],
+    "pr": 7
+  },
+  "expect": {
+    "status": "FAIL",
+    "codes": [
+      "UNKNOWN_RUN_REFERENCE"
+    ],
+    "labels": []
+  },
+  "api": {
+    "commit_status": "success",
+    "run_ownership": {
+      "12345": false
+    }
+  },
+  "pr_text": "см. прогон run/12345\n$ pytest\nстоп-события: нет\n",
+  "commit_sha": "abc123def"
+}

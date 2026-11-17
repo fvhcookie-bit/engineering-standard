@@ -38,3 +38,25 @@ class GitLabAdapter:
         data = resp.json() if resp.ok else {}
         approved = data.get("approved_by", []) if isinstance(data, dict) else []
         return [str(a.get("user", {}).get("username", "")) for a in approved if isinstance(a, dict)]
+
+    def get_commit_check_status(self, commit_sha: str) -> str | None:
+        import requests
+
+        from adapters.base import AdapterUnavailable
+
+        url = f"{self._base}/projects/{self._project}/repository/commits/{commit_sha}/status"
+        resp = requests.get(url, headers=self._headers(), timeout=30)
+        if not resp.ok:
+            raise AdapterUnavailable(f"GitLab API: {resp.status_code}")
+        state = resp.json().get("status") if isinstance(resp.json(), dict) else None
+        return str(state) if state else None
+
+    def run_belongs_to_commit(self, run_id: int, commit_sha: str) -> bool:
+        from adapters.base import AdapterUnavailable
+
+        raise AdapterUnavailable("принадлежность прогонов в GitLab не поддерживается в v0.x")
+
+    def get_task_files(self, task_id: str) -> list[str] | None:
+        from adapters.base import AdapterUnavailable
+
+        raise AdapterUnavailable(f"трекер задач не подключён (task {task_id})")
