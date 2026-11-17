@@ -1,0 +1,21 @@
+schema: 1
+ecosystem: java
+reason_proximity_default: same_line
+patterns:
+- id: suppresswarnings
+  regex: '@SuppressWarnings\b'
+  languages:
+  - java
+  - kotlin
+  positive: '@SuppressWarnings("unchecked")
+
+    List l = raw;'
+  negative: // @SuppressWarnings как текст
+- id: disabled
+  regex: '@Disabled\b'
+  languages:
+  - java
+  positive: '@Disabled("env")
+
+    @Test void t() {}'
+  negative: '@Test void works() {}'

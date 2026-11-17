@@ -19,7 +19,7 @@ class Pattern:
 
 
 def load_dictionary(text: str) -> list[Pattern]:
-    import yaml  # type: ignore[import-untyped]
+    import yaml
 
     data = yaml.safe_load(text)
     if not isinstance(data, dict) or data.get("schema") != 1:

@@ -1,0 +1,16 @@
+schema: 1
+ecosystem: javascript
+reason_proximity_default: same_line
+patterns:
+- id: js_eslint_disable
+  regex: eslint-disable(-line|-next-line)?\b
+  languages:
+  - javascript
+  positive: // eslint-disable no-undef
+  negative: // eslint config example
+- id: js_noinspection
+  regex: ^\s*//\s*noinspection\b
+  languages:
+  - javascript
+  positive: // noinspection JSUnusedLocalSymbols
+  negative: // обычный комментарий

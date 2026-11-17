@@ -124,7 +124,7 @@ class Registries:
 
 
 def load_baseline(text: str) -> dict[str, Any]:
-    import yaml  # type: ignore[import-untyped]
+    import yaml
 
     data = yaml.safe_load(text)
     return data if isinstance(data, dict) else {}

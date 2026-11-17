@@ -1,0 +1,32 @@
+schema: 1
+ecosystem: rust
+reason_proximity_default: same_line
+patterns:
+- id: allow_attr
+  regex: '#\[\s*allow\('
+  languages:
+  - rust
+  positive: '#[allow(dead_code)]
+
+    fn f() {}'
+  negative: '#[derive(Debug)]
+
+    struct S;'
+- id: crate_allow
+  regex: '#!\[\s*allow\('
+  languages:
+  - rust
+  positive: '#![allow(clippy::too_many_arguments)]'
+  negative: '// #![allow — как текст'
+- id: unsafe_block
+  regex: \bunsafe\s*\{
+  languages:
+  - rust
+  positive: let p = unsafe { ptr.read() };
+  negative: let p = safe_read();
+- id: unsafe_fn
+  regex: \bunsafe\s+fn\b
+  languages:
+  - rust
+  positive: 'unsafe fn raw(ptr: *mut u8) {}'
+  negative: fn safe_read() {}

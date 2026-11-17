@@ -1,0 +1,25 @@
+schema: 1
+ecosystem: c_cpp
+reason_proximity_default: same_line
+patterns:
+- id: nolint
+  regex: //\s*NOLINT\b
+  languages:
+  - c
+  - cpp
+  positive: int x = f(); // NOLINT(cppcoreguidelines-*)
+  negative: int x = f(); // обычный
+- id: nolintnextline
+  regex: //\s*NOLINTNEXTLINE\b
+  languages:
+  - c
+  - cpp
+  positive: // NOLINTNEXTLINE(misc-*)
+  negative: // NOLINT — тут нет
+- id: pragma_warning
+  regex: '#pragma warning\s*\('
+  languages:
+  - c
+  - cpp
+  positive: '#pragma warning(disable : 4996)'
+  negative: '#pragma once'

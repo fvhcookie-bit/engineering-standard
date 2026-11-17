@@ -1,0 +1,35 @@
+schema: 1
+ecosystem: typescript
+reason_proximity_default: same_line
+patterns:
+- id: eslint_disable
+  regex: eslint-disable(-line|-next-line)?\b
+  languages:
+  - typescript
+  - javascript
+  positive: // eslint-disable-next-line no-console
+  negative: // обычный комментарий
+- id: ts_ignore
+  regex: '@ts-ignore\b'
+  languages:
+  - typescript
+  positive: // @ts-ignore
+  negative: // @ts-expect-error тут
+- id: ts_expect_error
+  regex: '@ts-expect-error\b'
+  languages:
+  - typescript
+  positive: '// @ts-expect-error: намеренно неверный тип'
+  negative: // @ts-ignore
+- id: ts_nocheck
+  regex: '@ts-nocheck\b'
+  languages:
+  - typescript
+  positive: // @ts-nocheck
+  negative: // обычный заголовок
+- id: as_any
+  regex: \bas any\b
+  languages:
+  - typescript
+  positive: const v = payload as any;
+  negative: const v = payload as unknown;

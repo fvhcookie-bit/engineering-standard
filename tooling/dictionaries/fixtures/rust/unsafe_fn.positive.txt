@@ -1,0 +1,1 @@
+unsafe fn raw(ptr: *mut u8) {}

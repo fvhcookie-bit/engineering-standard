@@ -1,0 +1,1 @@
+let p = safe_read();

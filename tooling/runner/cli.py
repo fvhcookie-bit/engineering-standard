@@ -120,7 +120,7 @@ def _cmd_baseline(args: argparse.Namespace) -> int:
     baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
     diff_files = parse_unified_diff(Path(args.diff).read_text(encoding="utf-8", errors="replace"))
     new_baseline = migrate(baseline, RepoFiles(root=repo_root), patterns, {}, diff_files)
-    import yaml  # type: ignore[import-untyped]
+    import yaml
 
     baseline_path.write_text(
         "# baseline подавлений (храповик Q-11)\n"

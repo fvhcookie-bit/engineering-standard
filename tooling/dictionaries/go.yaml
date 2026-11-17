@@ -1,0 +1,16 @@
+schema: 1
+ecosystem: go
+reason_proximity_default: same_line
+patterns:
+- id: nolint
+  regex: //\s*nolint(?::\s*[A-Za-z, ]+)?
+  languages:
+  - go
+  positive: x := 1 //nolint:errcheck
+  negative: x := 1 // обычный комментарий
+- id: nosec
+  regex: //\s*#nosec\b
+  languages:
+  - go
+  positive: 'cmd := exec.Command(a) // #nosec G204'
+  negative: '// #nosec как текст'

@@ -1,0 +1,2 @@
+@SuppressWarnings("unchecked")
+List l = raw;
