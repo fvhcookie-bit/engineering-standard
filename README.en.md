@@ -25,9 +25,9 @@ and its enforcement layer (guard gates).
 1. **ENGINEERING_PRINCIPLES.md** — 55 principles across domains A–H (48 live after the v1.2 merges; the rest are stubs kept for traceability); project classes К1–К3 (`REPO_CLASS`); carrier terms (§0.7). — **English: [standards/en/ENGINEERING_PRINCIPLES.md](standards/en/ENGINEERING_PRINCIPLES.md)**.
 2. **QUALITY_GATES.md** — the executable model of checks: levels L0–L4, the ratchet rule, the gate catalog Q-01…Q-19. — **English: [standards/en/QUALITY_GATES.md](standards/en/QUALITY_GATES.md)**.
 3. **AI_AGENT_RULES.md** — the rules for AI agents: task boundaries, prompt-injection protection, stop conditions, the PR checklist. — **English: [standards/en/AI_AGENT_RULES.md](standards/en/AI_AGENT_RULES.md)**.
-4. **EXCEPTIONS_POLICY.md** — the deviation taxonomy E-A…E-D, the sign-off matrix, the consequences of violations. — English translation not yet available.
-5. **IMPLEMENTATION_GUIDE.md** — the adoption procedure: 7 stages, success metrics, anti-patterns. — English translation not yet available.
-6. **TRACEABILITY.md** — traceability to the NASA Power of 10 rules (version history — in [CHANGELOG.md](CHANGELOG.md)); anchors of the original quotes for mechanical verification. — English translation not yet available.
+4. **EXCEPTIONS_POLICY.md** — the deviation taxonomy E-A…E-D, the sign-off matrix, the consequences of violations. — **English: [standards/en/EXCEPTIONS_POLICY.md](standards/en/EXCEPTIONS_POLICY.md)**.
+5. **IMPLEMENTATION_GUIDE.md** — the adoption procedure: 7 stages, success metrics, anti-patterns. — **English: [standards/en/IMPLEMENTATION_GUIDE.md](standards/en/IMPLEMENTATION_GUIDE.md)**.
+6. **TRACEABILITY.md** — traceability to the NASA Power of 10 rules (version history — in [CHANGELOG.md](CHANGELOG.md)); anchors of the original quotes for mechanical verification. — **English: [standards/en/TRACEABILITY.md](standards/en/TRACEABILITY.md)**.
 
 ## Enforcement layer (`guidelines/`)
 
