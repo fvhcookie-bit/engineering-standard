@@ -4,8 +4,10 @@ on:
   push:
     branches: [main]
     paths: ["tooling/**", ".github/workflows/tooling.yml"]
+  # pull_request — без paths-фильтра: tests/self-gate-q11 входят в required
+  # status checks branch protection и должны отчитаться на каждом PR,
+  # иначе merge блокируется («Expected — waiting for status»).
   pull_request:
-    paths: ["tooling/**", ".github/workflows/tooling.yml"]
   workflow_dispatch:
 
 jobs:
