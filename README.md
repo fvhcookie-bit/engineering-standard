@@ -45,3 +45,10 @@
 - [x] Автоматическая проверка L0 (гейт `l0_perimeter`, ночной режим)
 - [x] Сводная таблица «находка ревью → статус применения» (`standards/review/REVIEWS_STATUS.md`)
 - [ ] Подключение первого реального целевого репозитория (следующий этап эксплуатации)
+
+## Лицензия
+
+[GPL-3.0](LICENSE) (GNU General Public License v3). Текстовые документы стандарта
+(`standards/`, `guidelines/`) и исполняемый слой (`tooling/`) лицензируются
+одинаково. Основа — статья G. J. Holzmann «The Power of 10» (IEEE Computer, 2006);
+трассировка заимствований — `standards/TRACEABILITY.md`.
