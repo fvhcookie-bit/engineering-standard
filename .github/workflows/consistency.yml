@@ -17,3 +17,5 @@ jobs:
         run: python tools/doc_consistency.py
       - name: Digest freshness (ROADMAP B-9)
         run: python tools/build_digest.py --check
+      - name: Digest freshness, English translation
+        run: python tools/build_digest.py --lang en --check
