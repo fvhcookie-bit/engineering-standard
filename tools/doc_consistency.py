@@ -22,6 +22,12 @@
   VERSIONS    у каждого документа ядра есть ровно одна **Версия:**; все равны последней
               записи таблицы «Стандарт» в CHANGELOG.md (единая история версий, A-4);
               README упоминает v<эта версия>
+  MIRRORS     у каждого перевода (standards/en/*.md, *.en.md) есть русский оригинал
+
+Переводы (TRANSL): официальные английские версии в standards/en/ и *.en.md.
+Русская редакция — канон. Переводы проверяются на ссылки, файлы, гейты,
+принципы и зеркала; исключены из VERSIONS/SECTIONS/TERMS/CLAIMS (там сравнение
+с русской структурой не имеет смысла).
   TERMS       несущие термины §0.7 EP не переопределяются в других документах
               (единый источник — требование самого §0.7)
   CLAIMS      заявленные количества («N принцип(а/ов)», диапазон «Q-01…Q-19»)
@@ -64,14 +70,17 @@ def rparts(p: Path) -> tuple[str, ...]:
     return p.relative_to(ROOT).parts
 
 
-CORE = [p for p in md_files() if rparts(p)[0] == "standards" and "review" not in rparts(p)]
-GUIDELINES = [p for p in md_files() if rparts(p)[0] == "guidelines"]
+TRANSL = [p for p in md_files()
+          if "en" in rparts(p)[:-1] or p.name.endswith(".en.md")]
+CORE = [p for p in md_files() if rparts(p)[0] == "standards"
+        and "review" not in rparts(p) and p not in TRANSL]
+GUIDELINES = [p for p in md_files() if rparts(p)[0] == "guidelines" and p not in TRANSL]
 ROOT_DOCS = [ROOT / "README.md", ROOT / "ROADMAP.md"]
 STATUS = ROOT / "standards" / "review" / "REVIEWS_STATUS.md"
 ARCHIVE = [p for p in md_files()
            if rparts(p)[:2] == ("standards", "review") and p.name.startswith("review_")]
 
-CHECKED = CORE + GUIDELINES + ROOT_DOCS + [STATUS]
+CHECKED = CORE + GUIDELINES + ROOT_DOCS + [STATUS] + TRANSL
 
 EP = ROOT / "standards" / "ENGINEERING_PRINCIPLES.md"
 QG = ROOT / "standards" / "QUALITY_GATES.md"
@@ -84,6 +93,8 @@ TEXTS: dict[str, str] = {rel(p): p.read_text(encoding="utf-8") for p in md_files
 
 NAME2PATH: dict[str, Path] = {}
 for _p in md_files():
+    if _p in TRANSL:
+        continue  # переводы — не цели ссылок: канонические имена файлов — русские
     NAME2PATH.setdefault(_p.name, _p)
 
 ABBREVIATIONS = {
@@ -264,7 +275,6 @@ def run_checks() -> None:
         is_core = f in CORE
         is_aggregator = f in ROOT_DOCS or f == STATUS
         for i, ln in enumerate(lines_of(f), 1):
-            permit_key = (rel(f), ln.strip())
 
             # LINKS + FILES (FILES — только для проверяемого набора)
             for m in MDLINK.finditer(ln):
@@ -303,7 +313,7 @@ def run_checks() -> None:
                             f"«{m.group(0).strip()}»: в {rel(f)} нет раздела {m.group(1)}")
 
             # GATES (архив ревью и REVIEWS_STATUS исключены: исторические ID легитимны)
-            if f in CORE + GUIDELINES + ROOT_DOCS:
+            if f in CORE + GUIDELINES + ROOT_DOCS + TRANSL:
                 for m in GATE_REF.finditer(ln):
                     tok = f"Q-{m.group(1)}"
                     if tok not in gates and (rel(f), tok) not in PERMIT:
@@ -407,6 +417,19 @@ def run_checks() -> None:
                     err("CLAIMS", f, i,
                         f"диапазон гейтов Q-{m.group(1)}…Q-{m.group(2)} не совпадает "
                         f"с каталогом (Q-01…Q-{actual_hi:02d})")
+
+    # MIRRORS: у каждого перевода есть русский оригинал (standards/en/X.md ↔
+    # standards/X.md; README.en.md ↔ README.md)
+    for p in TRANSL:
+        parts = rparts(p)
+        if p.name.endswith(".en.md"):
+            orig = p.with_name(p.name[:-6] + ".md")
+        elif len(parts) >= 3 and parts[-2] == "en":
+            orig = ROOT.joinpath(*parts[:1], *parts[2:])
+        else:
+            continue
+        if not orig.exists():
+            err("MIRRORS", p, 1, f"перевод без русского оригинала: {rel(orig)}")
 
     # Целостность каталога гейтов
     expected = [f"Q-{i:02d}" for i in range(1, len(gates) + 1)]
