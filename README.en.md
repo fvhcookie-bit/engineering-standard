@@ -31,11 +31,11 @@ and its enforcement layer (guard gates).
 
 ## Enforcement layer (`guidelines/`)
 
-- **TASK_guard-gates.md** — the task specification for the companion (the `gate-runner` enforcement layer): stages M1–M4, the acceptance/bypass scenario matrix Б-1…Б-24.
-- **GUIDELINE_development.md** — the runner architecture, the gate contract, the independent-sources rule.
-- **GUIDELINE_profiles_and_dictionaries.md** — linter profiles, suppression dictionaries, config fingerprint.
+- **TASK_guard-gates.md** — the task specification for the companion (the `gate-runner` enforcement layer): stages M1–M4, the acceptance/bypass scenario matrix Б-1…Б-24. — **English: [guidelines/en/TASK_guard-gates.md](guidelines/en/TASK_guard-gates.md)**.
+- **GUIDELINE_development.md** — the runner architecture, the gate contract, the independent-sources rule. — **English: [guidelines/en/GUIDELINE_development.md](guidelines/en/GUIDELINE_development.md)**.
+- **GUIDELINE_profiles_and_dictionaries.md** — linter profiles, suppression dictionaries, config fingerprint. — **English: [guidelines/en/GUIDELINE_profiles_and_dictionaries.md](guidelines/en/GUIDELINE_profiles_and_dictionaries.md)**.
 
-English translations of the guidelines are not yet available (planned, stage 3).
+The enforcement layer's README also has a translation: [tooling/README.en.md](tooling/README.en.md).
 
 ## Companion
 
